@@ -1,11 +1,22 @@
-## Initial commit to test 
-## Put comments here that give an overall description of what your
-## functions do
+                        #############################
+                        #                           #
+                        #       cacheMatrix.R       #
+                        #                           #
+                        #############################
 
-## Write a short comment describing this function
+                        
+## author himanshu.babbar 
+##
+## The script file contains two methods 'makeCacheMatrix and 'cacheSolve' 
+## used for caching the inverse of an invertible matrix
+
+                        
+## makeCacheMatrix()
+## params 'varMatrix' : A square invertible matrix
+## This method contains getters and setters for the inverse matrices already cached
+## Also this has a getter method to pass the input matrix to cacheSolve()
 
 makeCacheMatrix <- function(varMatrix = matrix()){
-        #Add checks for non ivertible matrices
   
         matrixInverse <- NULL
         
@@ -29,24 +40,56 @@ makeCacheMatrix <- function(varMatrix = matrix()){
 }
 
 
-## Write a short comment describing this function
+## cacheSolve()
+## params 'matrix' : The list object returned by makeCacheMatrix()
 
+## We fetch the value of the original matrix from the list object
+## and calculate the inverse of the matrix using solve()
+## If the inverse has already been calculated, print a message and the inverse
+                        
 cacheSolve <- function(matrix){
         
         inverseMatrix <- matrix$getInverse()
         
-        if(!is.null(inverseMatrix)){  # if inverse was already cached (not NULL) ...
-              message("The inverse of this matrix has been calculated and is :")
+        if(!is.null(inverseMatrix)){                ## if inverse was already cached 
+                                                    ## print an empty line before the message
+              cat("\n")                           
+              message("The inverse of this matrix has been calculated and stored already !!!")
+              cat("\n")           
               return(inverseMatrix)
         }
-        else {                        # find the inverse of matrix
+        else {                                       ## find the inverse of matrix
               originalMatrix <- matrix$getValue()
-              inverseMatrix <- solve(originalMatrix)    # check for singular matrices
+                                                      
+              ## Using TryCatch block to check if the matrix entered is invertible
+              ## If not, print an error message.
               
-              matrix$setInverse(inverseMatrix)
+              inverse <- tryCatch({        
+                      
+                      originalMatrix <- matrix$getValue()
+                      inverseMatrix <- solve(originalMatrix)
+                      matrix$setInverse(inverseMatrix)
+                      return(inverseMatrix)
+                  
+                  },
+                
+                  error = function(e){
+                      message("Error!!! Please enter an invertible matrix")
+                  },
+                  
+                  finally = function(){
+                    
+                  }
+                  
+                
+              )
+              #inverseMatrix <- solve(originalMatrix)    # check for singular matrices
               
-              return(inverseMatrix)
+              #matrix$setInverse(inverseMatrix)
+              
+             # return(inverseMatrix)
           
         }
         
 }
+
